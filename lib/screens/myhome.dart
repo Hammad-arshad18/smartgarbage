@@ -152,14 +152,12 @@ class _MyHomeState extends State<MyHome> {
             height: 15.0,
           ),
           Container(
-            // padding: EdgeInsets.only(bottom: 20.0),
             height: 400,
             child: GridView.count(
               crossAxisCount: 2,
               crossAxisSpacing: 12,
               mainAxisSpacing: 8,
               childAspectRatio: 1.50,
-              // scrollDirection: Axis.horizontal,
               children: [
                 _services(
                   s_image: "assets/images/map.png",
