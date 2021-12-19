@@ -80,7 +80,7 @@ class _RegisterState extends State<Register> {
               child: Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(5.0),
+                    padding: const EdgeInsets.all(5.0),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10.0),
@@ -92,7 +92,7 @@ class _RegisterState extends State<Register> {
                         ),
                       ],
                       border: Border.all(
-                        color: Color.fromRGBO(143, 148, 251, .2),
+                        color: const Color.fromRGBO(143, 148, 251, .2),
                         width: 2.0,
                         style: BorderStyle.solid,
                       ),
@@ -105,7 +105,7 @@ class _RegisterState extends State<Register> {
                               hintText: "UserName",
                               hintStyle: TextStyle(color: Colors.grey[400]),
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.all(5.0),
+                              contentPadding: const EdgeInsets.all(5.0),
                               label: const Text("UserName"),
                             ),
                           ),
@@ -123,7 +123,7 @@ class _RegisterState extends State<Register> {
                               hintText: "Email",
                               hintStyle: TextStyle(color: Colors.grey[400]),
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.all(5.0),
+                              contentPadding: const EdgeInsets.all(5.0),
                               label: const Text("Email Address"),
                             ),
                           ),
@@ -146,10 +146,10 @@ class _RegisterState extends State<Register> {
                                     if (isobsecure) {
                                       isobsecure = false;
                                       passfieldicon =
-                                          Icon(Icons.visibility_off);
+                                      const Icon(Icons.visibility_off);
                                     } else {
                                       isobsecure = true;
-                                      passfieldicon = Icon(Icons.visibility);
+                                      passfieldicon = const Icon(Icons.visibility);
                                     }
                                   });
                                 },
@@ -158,8 +158,8 @@ class _RegisterState extends State<Register> {
                               ),
                               hintStyle: TextStyle(color: Colors.grey[400]),
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.all(5.0),
-                              label: Text("Password"),
+                              contentPadding: const EdgeInsets.all(5.0),
+                              label: const Text("Password"),
                             ),
                           ),
                         ),

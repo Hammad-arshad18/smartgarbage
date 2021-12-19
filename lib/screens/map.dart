@@ -14,7 +14,7 @@ class _MapsState extends State<Maps> {
   void _mapcreate(GoogleMapController controller) {
     setState(() {
       _marker.add(
-       const Marker(
+        const Marker(
           markerId: MarkerId('Marker-1'),
           position: LatLng(32.4925139, 74.5487448),
         ),

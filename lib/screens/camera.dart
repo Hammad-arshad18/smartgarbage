@@ -25,7 +25,7 @@ class _CameraState extends State<Camera> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: ListView(
         // mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -104,7 +104,8 @@ class _CameraState extends State<Camera> {
                   ),
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.white),
-                      padding: MaterialStateProperty.all(EdgeInsets.all(10)),
+                      padding:
+                          MaterialStateProperty.all(const EdgeInsets.all(10)),
                       shape: MaterialStateProperty.all(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
@@ -134,7 +135,8 @@ class _CameraState extends State<Camera> {
                   ),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.white),
-                    padding: MaterialStateProperty.all(EdgeInsets.all(10)),
+                    padding:
+                        MaterialStateProperty.all(const EdgeInsets.all(10)),
                     shape: MaterialStateProperty.all(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
@@ -163,7 +165,7 @@ class _CameraState extends State<Camera> {
               ),
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.white),
-                padding: MaterialStateProperty.all(EdgeInsets.all(10.0)),
+                padding: MaterialStateProperty.all(const EdgeInsets.all(10.0)),
                 shape: MaterialStateProperty.all(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20.0),

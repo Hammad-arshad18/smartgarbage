@@ -13,7 +13,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(14.0),
+      padding: const EdgeInsets.all(14.0),
       width: MediaQuery.of(context).size.width,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -112,7 +112,7 @@ class _ProfileState extends State<Profile> {
             style: ButtonStyle(
               backgroundColor:
                   MaterialStateProperty.all(Colors.deepPurpleAccent),
-              padding: MaterialStateProperty.all(EdgeInsets.all(12)),
+              padding: MaterialStateProperty.all(const EdgeInsets.all(12)),
               shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),

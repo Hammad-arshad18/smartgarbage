@@ -16,7 +16,7 @@ void main() {
         imageSrc: 'assets/images/Logo.png',
         text: "SMART GARBAGE",
         textType: TextType.ColorizeAnimationText,
-        textStyle: TextStyle(fontSize: 40.0),
+        textStyle: const TextStyle(fontSize: 40.0),
         colors: const [
           Colors.purple,
           Colors.blue,
@@ -28,7 +28,7 @@ void main() {
       routes: {
         Login.id: (context) => Login(),
         Register.id: (context) => Register(),
-        HomePage.id : (context)=>HomePage(),
+        HomePage.id: (context) => HomePage(),
       },
     ),
   );
