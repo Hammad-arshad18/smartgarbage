@@ -17,7 +17,7 @@ void main() {
         text: "SMART GARBAGE",
         textType: TextType.ColorizeAnimationText,
         textStyle: TextStyle(fontSize: 40.0),
-        colors: [
+        colors: const [
           Colors.purple,
           Colors.blue,
           Colors.yellow,

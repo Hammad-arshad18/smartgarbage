@@ -26,27 +26,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      // bottomNavigationBar: ClipRect(
-      //   child: CurvedNavigationBar(
-      //     height: 60.0,
-      //       index: _indexbottomnavigation,
-      //       onTap: (index){
-      //       setState(() {
-      //         _indexbottomnavigation=index;
-      //       });
-      //       },
-      //       items: const <Widget>[
-      //         Icon(Icons.home,size: 30.0,),
-      //         Icon(Icons.camera_alt_outlined,size: 30.0,),
-      //         Icon(Icons.person,size: 30.0,),
-      //       ],
-      //     color: Colors.white,
-      //     buttonBackgroundColor: Colors.white,
-      //     backgroundColor: Color.fromRGBO(143, 148, 251, 1.0),
-      //     animationCurve: Curves.linearToEaseOut,
-      //     animationDuration: Duration(milliseconds: 600),
-      //   ),
-      // ),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           color: Colors.white,
