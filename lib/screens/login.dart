@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:smartgarbage/screens/home.dart';
 import 'package:smartgarbage/screens/register.dart';
 
@@ -12,6 +15,9 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   var isobsecure = true;
   var passfieldicon = Icon(Icons.visibility);
+  TextEditingController _emailcontroller = new TextEditingController();
+  TextEditingController _passwordcontroller = new TextEditingController();
+  final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +114,14 @@ class _LoginState extends State<Login> {
                         Container(
                           child: TextFormField(
                             keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            controller: _emailcontroller,
+                            validator: (value) {
+                              return "Email Field Is Required";
+                            },
+                            onSaved: (value) {
+                              _emailcontroller.text = value!;
+                            },
                             decoration: InputDecoration(
                               hintText: "Email",
                               hintStyle: TextStyle(color: Colors.grey[400]),
@@ -126,7 +140,17 @@ class _LoginState extends State<Login> {
                         Container(
                           child: TextFormField(
                             keyboardType: TextInputType.visiblePassword,
+                            textInputAction: TextInputAction.done,
+                            controller: _passwordcontroller,
+                            validator: (value) {
+                              if (_passwordcontroller.text.isEmpty) {
+                                return "Password Field Is Required";
+                              }
+                            },
                             obscureText: isobsecure,
+                            onSaved: (value) {
+                              _passwordcontroller.text = value!;
+                            },
                             decoration: InputDecoration(
                               hintText: "Password",
                               suffixIcon: IconButton(
@@ -159,7 +183,10 @@ class _LoginState extends State<Login> {
               const SizedBox(height: 30),
               InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, HomePage.id);
+                  SignIn(
+                    email: _emailcontroller.text,
+                    password: _passwordcontroller.text,
+                  );
                 },
                 child: Container(
                   height: 50,
@@ -203,5 +230,21 @@ class _LoginState extends State<Login> {
         ],
       ),
     );
+  }
+
+  void SignIn({required email, required password}) async {
+    if(email.isEmpty || password.isEmpty){
+      Fluttertoast.showToast(msg: "Email & Password Fields Are Required");
+    }else{
+      await _auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((uid) => {
+        Fluttertoast.showToast(msg: "Login Successfull"),
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => HomePage()))
+      })
+          .catchError(
+              (error) => {Fluttertoast.showToast(msg: "Invalid Credentials")});
+    }
   }
 }

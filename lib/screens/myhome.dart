@@ -2,6 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:smartgarbage/screens/camera.dart';
+import 'package:smartgarbage/screens/login.dart';
+import 'package:smartgarbage/screens/map.dart';
+import 'package:smartgarbage/screens/profile.dart';
 
 class MyHome extends StatefulWidget {
   const MyHome({Key? key}) : super(key: key);
@@ -11,10 +15,10 @@ class MyHome extends StatefulWidget {
 }
 
 class _MyHomeState extends State<MyHome> {
-  Widget _services({required s_image, required s_text}) {
+  Widget _services({required s_image, required s_text, onTap}) {
     return InkWell(
       splashColor: Colors.grey,
-      onTap: (){},
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
@@ -54,6 +58,13 @@ class _MyHomeState extends State<MyHome> {
 
   @override
   Widget build(BuildContext context) {
+    int _indexbottomnavigation = 0;
+    const screens_navigation =  [
+      MyHome(),
+      Camera(),
+      Profile(),
+      Maps(),
+    ];
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: ListView(
@@ -62,7 +73,10 @@ class _MyHomeState extends State<MyHome> {
             padding: const EdgeInsets.all(10.0),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(color: Colors.deepPurpleAccent,width: 0.5,),
+              border: Border.all(
+                color: Colors.deepPurpleAccent,
+                width: 0.5,
+              ),
               boxShadow: const [
                 BoxShadow(
                   color: Colors.grey,
@@ -79,7 +93,10 @@ class _MyHomeState extends State<MyHome> {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(color: Colors.grey,width: 0.8,),
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 0.8,
+                    ),
                     boxShadow: const [
                       BoxShadow(
                         color: Colors.grey,
@@ -160,12 +177,24 @@ class _MyHomeState extends State<MyHome> {
               childAspectRatio: 1.50,
               children: [
                 _services(
-                  s_image: "assets/images/map.png",
-                  s_text: "Location",
-                ),
+                    s_image: "assets/images/map.png",
+                    s_text: "Location",
+                    onTap: () {
+                      Navigator.pushNamed(context, Login.id);
+                    },
+                    ),
                 _services(
                   s_image: "assets/images/news.png",
                   s_text: "Mark Status",
+                  onTap: (){
+                    /*AlertDialog(
+                      title: const Text("Status Complete"),
+                      content: const Text("Your Status Has Been Markes As Completed"),
+                      actions: [
+                        TextButton(onPressed: onPressed, child: child)
+                      ],
+                    );*/
+                  }
                 ),
                 _services(
                   s_image: "assets/images/awards.png",

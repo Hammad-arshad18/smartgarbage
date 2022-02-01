@@ -1,5 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:smartgarbage/screens/home.dart';
 
 class Register extends StatefulWidget {
   static const String id = "Register";
@@ -11,6 +14,9 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   var isobsecure = true;
   var passfieldicon = Icon(Icons.visibility);
+  TextEditingController _emailcontroller = new TextEditingController();
+  TextEditingController _passwordcontroller = new TextEditingController();
+  final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -101,30 +107,21 @@ class _RegisterState extends State<Register> {
                       children: [
                         Container(
                           child: TextFormField(
-                            decoration: InputDecoration(
-                              hintText: "UserName",
-                              hintStyle: TextStyle(color: Colors.grey[400]),
-                              border: InputBorder.none,
-                              contentPadding: const EdgeInsets.all(5.0),
-                              label: const Text("UserName"),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10.0,
-                          child: Divider(
-                            thickness: 1.4,
-                          ),
-                        ),
-                        Container(
-                          child: TextFormField(
                             keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            controller: _emailcontroller,
+                            validator: (value) {
+                              return "Email Field Is Required";
+                            },
+                            onSaved: (value) {
+                              _emailcontroller.text = value!;
+                            },
                             decoration: InputDecoration(
                               hintText: "Email",
                               hintStyle: TextStyle(color: Colors.grey[400]),
                               border: InputBorder.none,
-                              contentPadding: const EdgeInsets.all(5.0),
-                              label: const Text("Email Address"),
+                              contentPadding: EdgeInsets.all(5.0),
+                              label: Text("Email Address"),
                             ),
                           ),
                         ),
@@ -138,6 +135,10 @@ class _RegisterState extends State<Register> {
                           child: TextFormField(
                             keyboardType: TextInputType.visiblePassword,
                             obscureText: isobsecure,
+                            controller: _passwordcontroller,
+                            onSaved: (value) {
+                              _passwordcontroller.text = value!;
+                            },
                             decoration: InputDecoration(
                               hintText: "Password",
                               suffixIcon: IconButton(
@@ -146,10 +147,11 @@ class _RegisterState extends State<Register> {
                                     if (isobsecure) {
                                       isobsecure = false;
                                       passfieldicon =
-                                      const Icon(Icons.visibility_off);
+                                          const Icon(Icons.visibility_off);
                                     } else {
                                       isobsecure = true;
-                                      passfieldicon = const Icon(Icons.visibility);
+                                      passfieldicon =
+                                          const Icon(Icons.visibility);
                                     }
                                   });
                                 },
@@ -182,7 +184,12 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        RegisterUser(
+                          email: _emailcontroller.text,
+                          password: _passwordcontroller.text,
+                        );
+                      },
                       child: const Center(
                         child: Text(
                           "Register",
@@ -196,20 +203,30 @@ class _RegisterState extends State<Register> {
                   ),
                   Center(
                       child: TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          "Already Have An Account ? Login",
-                          style: TextStyle(
-                              color: Color.fromRGBO(102, 110, 243, 2.0),
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ))
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      "Already Have An Account ? Login",
+                      style: TextStyle(
+                          color: Color.fromRGBO(102, 110, 243, 2.0),
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ))
                 ],
               ),
             ),
           ],
         ));
+  }
+
+  void RegisterUser({required email, required password}) async {
+    await _auth
+        .createUserWithEmailAndPassword(email: email, password: password)
+        .then((uid) => {
+              Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => HomePage()))
+            })
+        .catchError((onError) => {Fluttertoast.showToast(msg: "user not register")});
   }
 }

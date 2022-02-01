@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "514829165109",
+    "project_id": "smartgarbage-bc5a4",
+    "storage_bucket": "smartgarbage-bc5a4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514829165109:android:534dac0b79ef917528077c",
+        "android_client_info": {
+          "package_name": "com.example.smartgarbage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "514829165109-gukf5vb5p1n22iisd2esfgci9kk5p5u1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.smartgarbage",
+            "certificate_hash": "943eb5db09dd4f8191a62f9645925d3c9fa37165"
+          }
+        },
+        {
+          "client_id": "514829165109-6dd9r62rnrnfdupin2788c2ibbp9tek7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbdXqa-z7Ob6AWmjKIP5gqwvmV9EKJ5w8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "514829165109-6dd9r62rnrnfdupin2788c2ibbp9tek7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
