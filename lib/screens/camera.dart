@@ -76,7 +76,8 @@ class _CameraState extends State<Camera> {
                     child: Text(
                       "Image",
                       style: TextStyle(
-                          fontSize: 30.0, fontWeight: FontWeight.bold),
+                        fontSize: 30.0,
+                      ),
                     ),
                   ),
                 ),
@@ -98,9 +99,9 @@ class _CameraState extends State<Camera> {
                   label: const Text(
                     "Camera",
                     style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold),
+                      color: Colors.black,
+                      fontSize: 24.0,
+                    ),
                   ),
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -129,9 +130,9 @@ class _CameraState extends State<Camera> {
                   label: const Text(
                     "Gallery",
                     style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold),
+                      color: Colors.black,
+                      fontSize: 24.0,
+                    ),
                   ),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -159,9 +160,9 @@ class _CameraState extends State<Camera> {
               label: const Text(
                 "Detect",
                 style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold),
+                  color: Colors.black,
+                  fontSize: 24.0,
+                ),
               ),
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.white),

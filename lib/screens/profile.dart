@@ -1,5 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:smartgarbage/models/user_model.dart';
+import 'package:smartgarbage/screens/login.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Profile extends StatefulWidget {
@@ -10,6 +16,38 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  User? user = FirebaseAuth.instance.currentUser;
+  UserModel userModel = UserModel();
+  DocumentSnapshot? userdata;
+  late String email, username;
+
+  Future<void> getuserdata() async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user!.uid)
+        .get()
+        .then((value) => {
+              setState(() {
+                username = value['username'];
+                email = value['email'];
+              }),
+            });
+  }
+
+  @override
+  void initState() {
+    getuserdata();
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    getuserdata();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -26,8 +64,6 @@ class _ProfileState extends State<Profile> {
         ),
       ),
       child: ListView(
-        // mainAxisAlignment: MainAxisAlignment.center,
-        // crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           CircleAvatar(
             radius: 80.0,
@@ -60,28 +96,24 @@ class _ProfileState extends State<Profile> {
                 padding: const EdgeInsets.all(12.0),
                 child: Column(
                   children: [
-                    const Text(
-                      "Hammad Arshad",
-                      style: TextStyle(
-                          fontSize: 50.0, fontWeight: FontWeight.w700),
+                    Text(
+                      "${username}",
+                      style: const TextStyle(
+                        fontSize: 50.0,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(
                       height: 6.0,
                     ),
-                    const Text(
-                      "Hammad.arshad672@gmail.com",
-                      style: TextStyle(
-                          fontSize: 20.0, fontWeight: FontWeight.w500),
+                    Text(
+                      "${email}",
+                      style: const TextStyle(
+                        fontSize: 20.0,
+                      ),
                     ),
                     const SizedBox(
                       height: 6.0,
-                    ),
-                    const Text(
-                      "My name is Hammad Arshad from Sialkot Punjab Pakistan. I'm a student of Software Engineering. I Want To Become A Great  Developer",
-                      style: TextStyle(
-                          fontSize: 15.0, fontWeight: FontWeight.w500),
-                      textAlign: TextAlign.center,
                     ),
                     const SizedBox(
                       height: 10.0,
@@ -107,7 +139,7 @@ class _ProfileState extends State<Profile> {
           ),
           ElevatedButton(
             onPressed: () {
-              launch("https://usktinfo.000webhostapp.com/" );
+              Logoutuser();
             },
             style: ButtonStyle(
               backgroundColor:
@@ -120,7 +152,7 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             child: const Text(
-              "Visit Our Site",
+              "Logout",
               style: TextStyle(
                 fontSize: 20.0,
               ),
@@ -129,5 +161,12 @@ class _ProfileState extends State<Profile> {
         ],
       ),
     );
+  }
+
+  void Logoutuser() async {
+    await FirebaseAuth.instance.signOut().then((value) =>
+        {Fluttertoast.showToast(msg: "$username Logout Successfully")});
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (context) => Login()));
   }
 }

@@ -2,10 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:smartgarbage/screens/about.dart';
 import 'package:smartgarbage/screens/camera.dart';
-import 'package:smartgarbage/screens/login.dart';
+import 'package:smartgarbage/screens/contact.dart';
+import 'package:smartgarbage/screens/employee_month.dart';
+import 'package:smartgarbage/screens/employee_year.dart';
 import 'package:smartgarbage/screens/map.dart';
 import 'package:smartgarbage/screens/profile.dart';
+import 'package:badges/badges.dart';
+import 'package:status_alert/status_alert.dart';
 
 class MyHome extends StatefulWidget {
   const MyHome({Key? key}) : super(key: key);
@@ -46,7 +51,6 @@ class _MyHomeState extends State<MyHome> {
               s_text,
               style: const TextStyle(
                 fontSize: 15.0,
-                fontWeight: FontWeight.w900,
               ),
               textAlign: TextAlign.center,
             )
@@ -59,13 +63,13 @@ class _MyHomeState extends State<MyHome> {
   @override
   Widget build(BuildContext context) {
     int _indexbottomnavigation = 0;
-    const screens_navigation =  [
+    const screens_navigation = [
       MyHome(),
       Camera(),
       Profile(),
       Maps(),
     ];
-    return Padding(
+    return Container(
       padding: const EdgeInsets.all(12.0),
       child: ListView(
         children: [
@@ -112,16 +116,23 @@ class _MyHomeState extends State<MyHome> {
                         "Smart Garbage",
                         style: TextStyle(
                           fontSize: 32.0,
-                          fontWeight: FontWeight.w900,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                      IconButton(
-                        tooltip: "Notification Icon",
-                        onPressed: () {},
-                        icon: const Icon(
-                          Icons.notifications_none,
-                          size: 26.0,
-                          color: Colors.green,
+                      InkWell(
+                        splashColor: Colors.grey,
+                        onTap: () {},
+                        child: Badge(
+                          badgeContent: const Text(
+                            '3',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          animationType: BadgeAnimationType.slide,
+                          animationDuration: const Duration(milliseconds: 3000),
+                          child: const Icon(Icons.notifications_none),
+                          badgeColor: const Color.fromRGBO(143, 148, 251, 1.0),
                         ),
                       ),
                     ],
@@ -150,13 +161,13 @@ class _MyHomeState extends State<MyHome> {
                       Text(
                         "Garbage Alert",
                         style: TextStyle(
-                            fontSize: 30.0, fontWeight: FontWeight.w900),
+                            fontSize: 30.0, fontWeight: FontWeight.w500),
                         textAlign: TextAlign.center,
                       ),
                       Text(
                         "Rangpura, Sialkot",
                         style: TextStyle(
-                            fontSize: 16.0, fontWeight: FontWeight.w800),
+                            fontSize: 16.0, fontWeight: FontWeight.w400),
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -177,41 +188,72 @@ class _MyHomeState extends State<MyHome> {
               childAspectRatio: 1.50,
               children: [
                 _services(
-                    s_image: "assets/images/map.png",
-                    s_text: "Location",
+                  s_image: "assets/images/map.png",
+                  s_text: "Location",
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                              title: const Text(
+                                'Location Coordinates',
+                                textAlign: TextAlign.center,
+                              ),
+                              content: const Text(
+                                'Go To This Location & Clean The Garbage',
+                                textAlign: TextAlign.center,
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('OK'),
+                                )
+                              ],
+                            ));
+                  },
+                ),
+                _services(
+                    s_image: "assets/images/news.png",
+                    s_text: "Mark Status",
                     onTap: () {
-                      Navigator.pushNamed(context, Login.id);
-                    },
-                    ),
+                      StatusAlert.show(
+                        context,
+                        duration: const Duration(seconds: 2),
+                        title: 'DONE',
+                        subtitle: 'Your Status has Been Marked As Completed !!',
+                        configuration:
+                            const IconConfiguration(icon: Icons.done),
+                      );
+                    }),
                 _services(
-                  s_image: "assets/images/news.png",
-                  s_text: "Mark Status",
-                  onTap: (){
-                    /*AlertDialog(
-                      title: const Text("Status Complete"),
-                      content: const Text("Your Status Has Been Markes As Completed"),
-                      actions: [
-                        TextButton(onPressed: onPressed, child: child)
-                      ],
-                    );*/
-                  }
-                ),
+                    s_image: "assets/images/awards.png",
+                    s_text: "Employee of Month",
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => EmployeeMonth()));
+                    }),
                 _services(
-                  s_image: "assets/images/awards.png",
-                  s_text: "Employee of Month",
-                ),
+                    s_image: "assets/images/trophy.png",
+                    s_text: "Employee of Year",
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => EmployeeYear()));
+                    }),
                 _services(
-                  s_image: "assets/images/trophy.png",
-                  s_text: "Employee of Year",
-                ),
+                    s_image: "assets/images/contact.png",
+                    s_text: "Contact Us",
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => ContactUs()));
+                    }),
                 _services(
-                  s_image: "assets/images/contact.png",
-                  s_text: "Contact Us",
-                ),
-                _services(
-                  s_image: "assets/images/complain.png",
-                  s_text: "Complains",
-                ),
+                    s_image: "assets/images/complain.png",
+                    s_text: "About Us",
+                    onTap: () {
+                      Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => AboutUs()));
+                    }),
               ],
             ),
           ),

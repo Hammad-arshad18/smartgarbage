@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,24 +12,8 @@ Future <void> main() async{
   await Firebase.initializeApp();
   runApp(
     MaterialApp(
-
       debugShowCheckedModeBanner: false,
-      home: SplashScreenView(
-        navigateRoute: Login(),
-        duration: 3000,
-        imageSize: 100,
-        imageSrc: 'assets/images/Logo.png',
-        text: "SMART GARBAGE",
-        textType: TextType.ColorizeAnimationText,
-        textStyle: const TextStyle(fontSize: 40.0),
-        colors: const [
-          Colors.purple,
-          Colors.blue,
-          Colors.yellow,
-          Colors.red,
-        ],
-        backgroundColor: Colors.grey[300],
-      ),
+      home: SplashScreen(),
       routes: {
         Login.id: (context) => Login(),
         Register.id: (context) => Register(),
@@ -36,4 +21,35 @@ Future <void> main() async{
       },
     ),
   );
+}
+
+class SplashScreen extends StatelessWidget {
+
+  bool checksignin(){
+    User ? user = FirebaseAuth.instance.currentUser;
+    if(user?.email != null){
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SplashScreenView(
+      navigateRoute: checksignin()==false ? Login() : HomePage(),
+      duration: 3000,
+      imageSize: 100,
+      imageSrc: 'assets/images/Logo.png',
+      text: "SMART GARBAGE",
+      textType: TextType.ColorizeAnimationText,
+      textStyle: const TextStyle(fontSize: 40.0),
+      colors: const [
+        Colors.purple,
+        Colors.blue,
+        Colors.yellow,
+        Colors.red,
+      ],
+      backgroundColor: Colors.grey[300],
+    );
+  }
 }
