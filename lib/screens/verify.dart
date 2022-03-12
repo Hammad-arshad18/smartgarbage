@@ -21,7 +21,7 @@ class _VerifyEmailState extends State<VerifyEmail> {
     user = auth.currentUser;
     user!.sendEmailVerification();
     timer = Timer.periodic(Duration(seconds: 3), (timer) {
-      CheckEmailVerify();
+      checkEmailVerify();
     });
 
     // TODO: implement initState
@@ -29,14 +29,30 @@ class _VerifyEmailState extends State<VerifyEmail> {
   }
 
   @override
+  void dispose() {
+    timer!.cancel();
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-      child: Text('An Email Has Been Send To ${user!.email} For Verification'),
+      child: Column(
+        children: [
+          const Image(image: AssetImage('assets/images/Logo.png')),
+          Text(
+            'An Email Has Been Send To ${user!.email} For Verification'
+                .toUpperCase(),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     ));
   }
 
-  Future<void> CheckEmailVerify() async {
+  Future<void> checkEmailVerify() async {
     await user!.reload();
     if (user!.emailVerified) {
       Navigator.of(context)
