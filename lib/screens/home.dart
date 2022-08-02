@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:smartgarbage/screens/camera.dart';
+import 'package:smartgarbage/screens/blog.dart';
 import 'package:smartgarbage/screens/map.dart';
 import 'package:smartgarbage/screens/myhome.dart';
 import 'package:smartgarbage/screens/profile.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
-class HomePage extends StatefulWidget {
+class MainPage extends StatefulWidget {
   static const String id = "Homescreen";
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _MainPageState createState() => _MainPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _MainPageState extends State<MainPage> {
   int _indexbottomnavigation = 0;
   final screens_navigation = const [
     MyHome(),
-    Camera(),
+    // Camera(),
+    Blog(),
     Profile(),
     Maps(),
   ];
@@ -51,8 +52,8 @@ class _HomePageState extends State<HomePage> {
                 selectedColor: Colors.red,
               ),
               SalomonBottomBarItem(
-                icon: const Icon(Icons.camera_alt_outlined),
-                title: const Text("Camera"),
+                icon: const Icon(Icons.article_rounded),
+                title: const Text("Blog"),
                 selectedColor: Colors.orange,
               ),
               SalomonBottomBarItem(

@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:api_cache_manager/utils/cache_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:smartgarbage/screens/about.dart';
+import 'package:smartgarbage/screens/blog.dart';
 import 'package:smartgarbage/screens/camera.dart';
 import 'package:smartgarbage/screens/contact.dart';
 import 'package:smartgarbage/screens/employee_month.dart';
@@ -10,6 +14,8 @@ import 'package:smartgarbage/screens/employee_year.dart';
 import 'package:smartgarbage/screens/map.dart';
 import 'package:smartgarbage/screens/profile.dart';
 import 'package:badges/badges.dart';
+import 'package:smartgarbage/screens/taskEmployee.dart';
+import 'package:smartgarbage/screens/complaint.dart';
 import 'package:status_alert/status_alert.dart';
 
 class MyHome extends StatefulWidget {
@@ -20,6 +26,8 @@ class MyHome extends StatefulWidget {
 }
 
 class _MyHomeState extends State<MyHome> {
+  var _location; // List
+
   Widget _services({required s_image, required s_text, onTap}) {
     return InkWell(
       splashColor: Colors.grey,
@@ -60,6 +68,31 @@ class _MyHomeState extends State<MyHome> {
     );
   }
 
+  Future getTasks() async {
+    var cacheManager = await APICacheManager().getCacheData("username");
+    var url = Uri.parse(
+        'https://smart-garbage-api.herokuapp.com/api/tasks/${cacheManager.syncData}');
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      setState(() {
+        for (var i = 0; i < data.length; i++) {
+          if (data[i]['status'] != "Completed") {
+            _location = data[0]['task_data'];
+          }
+        }
+      });
+      return data;
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getTasks();
+  }
+
   @override
   Widget build(BuildContext context) {
     int _indexbottomnavigation = 0;
@@ -77,99 +110,97 @@ class _MyHomeState extends State<MyHome> {
             padding: const EdgeInsets.all(10.0),
             decoration: BoxDecoration(
               color: Colors.white,
-              border: Border.all(
-                color: Colors.deepPurpleAccent,
-                width: 0.5,
-              ),
+              // border: Border.all(
+              //   color: Colors.deepPurpleAccent,
+              //   width: 0.5,
+              // ),
               boxShadow: const [
                 BoxShadow(
                   color: Colors.grey,
-                  blurRadius: 4.0,
-                  offset: Offset(2, 2),
+                  blurRadius: 2.0,
+                  offset: Offset(1, 1),
                 ),
               ],
-              borderRadius: BorderRadius.circular(15.0),
+              borderRadius: BorderRadius.circular(10.0),
             ),
             child: Column(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(6.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(
-                      color: Colors.grey,
-                      width: 0.8,
-                    ),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.grey,
-                        blurRadius: 4.0,
-                        offset: Offset(2, 2),
-                      ),
-                    ],
+                    // border: Border.all(
+                    //   color: Colors.grey,
+                    //   width: 0.8,
+                    // ),
+                    // boxShadow: const [
+                    //   BoxShadow(
+                    //     color: Colors.grey,
+                    //     blurRadius: 4.0,
+                    //     offset: Offset(2, 2),
+                    //   ),
+                    // ],
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        "Smart Garbage",
-                        style: TextStyle(
-                          fontSize: 32.0,
-                          fontWeight: FontWeight.w500,
+                      Text(
+                        "Smart Garbage".toUpperCase(),
+                        style: const TextStyle(
+                          fontSize: 28.0,
+                          fontWeight: FontWeight.bold,
+                          // color: Colors.deepPurple,
                         ),
                       ),
                       InkWell(
-                        splashColor: Colors.grey,
-                        onTap: () {},
-                        child: Badge(
-                          badgeContent: const Text(
-                            '3',
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                          animationType: BadgeAnimationType.slide,
-                          animationDuration: const Duration(milliseconds: 3000),
-                          child: const Icon(Icons.notifications_none),
-                          badgeColor: const Color.fromRGBO(143, 148, 251, 1.0),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                const Center(
-                  child: Text(
-                    "Alert",
-                    style: TextStyle(
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.red),
-                  ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text(
-                        "Garbage Alert",
-                        style: TextStyle(
-                            fontSize: 30.0, fontWeight: FontWeight.w500),
-                        textAlign: TextAlign.center,
-                      ),
-                      Text(
-                        "Rangpura, Sialkot",
-                        style: TextStyle(
-                            fontSize: 16.0, fontWeight: FontWeight.w400),
-                        textAlign: TextAlign.center,
-                      ),
+                          splashColor: Colors.grey,
+                          onTap: () {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (context) => const TaskEmployee(),
+                              ),
+                            );
+                          },
+                          child: FutureBuilder(
+                              builder: (context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData && snapshot.data != null) {
+                              // print(snapshot.data.length);
+                              return Badge(
+                                badgeContent: Text(
+                                  "${snapshot.data.length}",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                animationType: BadgeAnimationType.slide,
+                                animationDuration:
+                                    const Duration(milliseconds: 3000),
+                                child: const Icon(Icons.notifications_none),
+                                badgeColor:
+                                    const Color.fromRGBO(143, 148, 251, 1.0),
+                              );
+                            } else {
+                              return Badge(
+                                badgeContent: const Text(
+                                  '',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                animationType: BadgeAnimationType.slide,
+                                animationDuration:
+                                    const Duration(milliseconds: 3000),
+                                child: const Icon(
+                                  Icons.notifications_none,
+                                  size: 30,
+                                  color: Color.fromARGB(255, 248, 176, 42),
+                                ),
+                                badgeColor:
+                                    const Color.fromRGBO(143, 148, 251, 1.0),
+                              );
+                            }
+                          })),
                     ],
                   ),
                 ),
@@ -180,7 +211,7 @@ class _MyHomeState extends State<MyHome> {
             height: 15.0,
           ),
           Container(
-            height: 400,
+            height: 500,
             child: GridView.count(
               crossAxisCount: 2,
               crossAxisSpacing: 12,
@@ -192,39 +223,36 @@ class _MyHomeState extends State<MyHome> {
                   s_text: "Location",
                   onTap: () {
                     showDialog(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                              title: const Text(
-                                'Location Coordinates',
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: const Text(
+                          'Location',
+                          textAlign: TextAlign.center,
+                        ),
+                        content: _location != null
+                            ? Text(
+                                '${_location}',
                                 textAlign: TextAlign.center,
-                              ),
-                              content: const Text(
-                                'Go To This Location & Clean The Garbage',
-                                textAlign: TextAlign.center,
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('OK'),
-                                )
-                              ],
-                            ));
+                              )
+                            : const Text("No Task Available"),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('OK'),
+                          )
+                        ],
+                      ),
+                    );
                   },
                 ),
                 _services(
                     s_image: "assets/images/news.png",
-                    s_text: "Mark Status",
+                    s_text: "Complaint",
                     onTap: () {
-                      StatusAlert.show(
-                        context,
-                        duration: const Duration(seconds: 2),
-                        title: 'DONE',
-                        subtitle: 'Your Status has Been Marked As Completed !!',
-                        configuration:
-                            const IconConfiguration(icon: Icons.done),
-                      );
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => const Comlaint()));
                     }),
                 _services(
                     s_image: "assets/images/awards.png",
@@ -244,16 +272,59 @@ class _MyHomeState extends State<MyHome> {
                     s_image: "assets/images/contact.png",
                     s_text: "Contact Us",
                     onTap: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => ContactUs()));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const ContactUs()));
                     }),
                 _services(
                     s_image: "assets/images/complain.png",
                     s_text: "About Us",
                     onTap: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => AboutUs()));
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const AboutUs()));
                     }),
+                _services(
+                    s_image: "assets/images/blogging.png",
+                    s_text: "Blogs",
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const Blog()));
+                    }),
+                _services(
+                    s_image: "assets/images/password.png",
+                    s_text: "Change Password",
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const AboutUs()));
+                    }),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 10.0,
+          ),
+          const Center(
+            child: Text(
+              "Neat & Clean Pakistan",
+              style: TextStyle(
+                fontSize: 25.0,
+                fontWeight: FontWeight.w900,
+                color: Colors.green,
+              ),
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text(
+                  "Developed By Hammad",
+                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
+                  textAlign: TextAlign.center,
+                ),
               ],
             ),
           ),

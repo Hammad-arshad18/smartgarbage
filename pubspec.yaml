@@ -15,7 +15,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.1.0+1
 
 environment:
   sdk: ">=2.15.0 <3.0.0"
@@ -27,29 +27,23 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  api_cache_manager: ^1.0.2
   badges: ^2.0.2
-  cloud_firestore: ^3.1.7
+  camera: ^0.9.8
   cupertino_icons: ^1.0.2
   curved_navigation_bar: ^1.0.1
-  firebase_auth: ^3.3.6
-  firebase_core: ^1.12.0
   flutter:
     sdk: flutter
   fluttertoast: ^8.0.8
   google_maps_flutter: ^2.1.1
+  http: ^0.13.4
   image_picker: ^0.8.4+4
   salomon_bottom_bar: ^3.2.0
   splash_screen_view: ^3.0.0
   status_alert: ^1.0.0
   url_launcher: ^6.0.17
-
+#  tflite: ^1.1.2
 dev_dependencies:
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^1.0.0
   flutter_test:
     sdk: flutter

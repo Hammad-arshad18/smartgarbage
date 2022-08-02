@@ -1,10 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:api_cache_manager/models/cache_db_model.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:smartgarbage/screens/forget_pass.dart';
 import 'package:smartgarbage/screens/home.dart';
 import 'package:smartgarbage/screens/register.dart';
-import 'package:smartgarbage/screens/verify.dart';
+import 'package:smartgarbage/services/login_service.dart';
+import 'package:api_cache_manager/api_cache_manager.dart';
 
 class Login extends StatefulWidget {
   static const String id = "login_screen";
@@ -18,7 +19,7 @@ class _LoginState extends State<Login> {
   var passfieldicon = Icon(Icons.visibility);
   TextEditingController _emailcontroller = new TextEditingController();
   TextEditingController _passwordcontroller = new TextEditingController();
-  final _auth = FirebaseAuth.instance;
+  // final _auth = FirebaseAuth.instance;
   final _formkey = GlobalKey<FormState>();
 
   @override
@@ -45,8 +46,8 @@ class _LoginState extends State<Login> {
                     child: Container(
                       decoration: const BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage('assets/images/light-1.png'),
-                          )),
+                        image: AssetImage('assets/images/light-1.png'),
+                      )),
                     ),
                   ),
                   Positioned(
@@ -56,8 +57,8 @@ class _LoginState extends State<Login> {
                     child: Container(
                       decoration: const BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage('assets/images/light-1.png'),
-                          )),
+                        image: AssetImage('assets/images/light-1.png'),
+                      )),
                     ),
                   ),
                   Positioned(
@@ -122,7 +123,7 @@ class _LoginState extends State<Login> {
                                 controller: _emailcontroller,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return "Email Is Required";
+                                    return "Username Is Required";
                                   }
                                 },
                                 onSaved: (value) {
@@ -133,7 +134,7 @@ class _LoginState extends State<Login> {
                                   hintStyle: TextStyle(color: Colors.grey[400]),
                                   border: InputBorder.none,
                                   contentPadding: const EdgeInsets.all(5.0),
-                                  label: const Text("Email Address"),
+                                  label: const Text("Username"),
                                 ),
                               ),
                             ),
@@ -151,6 +152,8 @@ class _LoginState extends State<Login> {
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return "Password Field Is Required";
+                                  } else if (value.length < 8) {
+                                    return "Password Should Be of Minimum 8 Characters";
                                   }
                                 },
                                 obscureText: isobsecure,
@@ -168,7 +171,8 @@ class _LoginState extends State<Login> {
                                               const Icon(Icons.visibility_off);
                                         } else {
                                           isobsecure = true;
-                                          passfieldicon = const Icon(Icons.visibility);
+                                          passfieldicon =
+                                              const Icon(Icons.visibility);
                                         }
                                       });
                                     },
@@ -187,11 +191,15 @@ class _LoginState extends State<Login> {
                     ]),
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
                 InkWell(
                   onTap: () {
-                    SignIn(
-                      email: _emailcontroller.text,
+                    // SignIn(
+                    //   email: _emailcontroller.text,
+                    //   password: _passwordcontroller.text,
+                    // );
+                    signInApi(
+                      username: _emailcontroller.text,
                       password: _passwordcontroller.text,
                     );
                   },
@@ -208,30 +216,52 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     child: const Center(
-                        child: Text(
-                          "Login",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.bold),
-                        )),
+                      child: Text(
+                        "Login",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 25.0,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(
                   height: 20.0,
                 ),
-                Center(
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, Register.id);
-                      },
-                      child: const Text(
-                        "Don't Have Account ? Register",
-                        style: TextStyle(
-                            color: Color.fromRGBO(102, 110, 243, 2.0),
-                            fontWeight: FontWeight.w500),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Center(
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, Register.id);
+                          },
+                          child: const Text(
+                            "Don't Have Account ? Register",
+                            style: TextStyle(
+                                color: Color.fromRGBO(102, 110, 243, 2.0),
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
                       ),
-                    ))
+                    ),
+                    Expanded(
+                      child: Center(
+                        child: TextButton(
+                          onPressed: () =>
+                              Navigator.pushNamed(context, ForgetPassword.id),
+                          child: const Text(
+                            'Forget Password',
+                            style: TextStyle(
+                                color: Color.fromRGBO(102, 110, 243, 2.0),
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ]),
             ),
           ],
@@ -240,29 +270,54 @@ class _LoginState extends State<Login> {
     );
   }
 
-  void SignIn({required email, required password}) async {
+  void signInApi({required username, required password}) async {
+    final loginService = LoginService();
     if (_formkey.currentState!.validate()) {
-      await _auth
-          .signInWithEmailAndPassword(email: email, password: password)
-          .then((uid) => {
-      showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => const Center(
-      child: CircularProgressIndicator(),
-      ),
-      ),
-      if(_auth.currentUser!.emailVerified){
-        Fluttertoast.showToast(msg: "Login Successful"),
-      Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => HomePage()))
-      } else{
+      Center(child: CircularProgressIndicator());
+      loginService.loginApiCall({
+        "username": username,
+        "password": password,
+      }).then((value) async {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => const Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+        if (value.error != null) {
+          // print("My Value : ${value.error}");
+          showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text(
+                'Login Error',
+                textAlign: TextAlign.center,
+              ),
+              content: Text(
+                '${value.error}',
+                textAlign: TextAlign.center,
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('OK'),
+                )
+              ],
+            ),
+          );
+        } else {
+          // print("My Value : ${value.token}");
+          // Fluttertoast.showToast(msg: "Login Successful");
+          APICacheDBModel userDetail =
+              APICacheDBModel(key: "username", syncData: username);
+          await APICacheManager().addCacheData(userDetail);
           Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const VerifyEmail()))
+              MaterialPageRoute(builder: (context) => MainPage()));
+        }
+      });
     }
-  })
-        .catchError(
-    (error) => {Fluttertoast.showToast(msg: "$error")});
-  }
   }
 }

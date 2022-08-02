@@ -1,11 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:api_cache_manager/models/cache_db_model.dart';
+import 'package:api_cache_manager/utils/cache_manager.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:smartgarbage/models/user_model.dart';
 import 'package:smartgarbage/screens/home.dart';
-import 'package:smartgarbage/screens/verify.dart';
+import 'package:smartgarbage/services/register_service.dart';
 
 class Register extends StatefulWidget {
   static const String id = "Register";
@@ -20,7 +22,7 @@ class _RegisterState extends State<Register> {
   TextEditingController _emailcontroller = new TextEditingController();
   TextEditingController _passwordcontroller = new TextEditingController();
   TextEditingController _usernamecontroller = TextEditingController();
-  final _auth = FirebaseAuth.instance;
+  // final _auth = FirebaseAuth.instance;
   final _key = GlobalKey<FormState>();
 
   @override
@@ -120,6 +122,8 @@ class _RegisterState extends State<Register> {
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return "UserName Is Required";
+                                  } else if (value.contains("")) {
+                                    return "Empty Spaces & - Are Not Allowed To Use in Username";
                                   }
                                 },
                                 onSaved: (value) {
@@ -130,7 +134,7 @@ class _RegisterState extends State<Register> {
                                   hintStyle: TextStyle(color: Colors.grey[400]),
                                   border: InputBorder.none,
                                   contentPadding: EdgeInsets.all(5.0),
-                                  label: Text("UserName"),
+                                  label: const Text("UserName"),
                                 ),
                               ),
                             ),
@@ -148,6 +152,8 @@ class _RegisterState extends State<Register> {
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return "Email Field Is Required";
+                                  } else if (!value.contains('@')) {
+                                    return "Enter Valid Email";
                                   }
                                 },
                                 onSaved: (value) {
@@ -158,7 +164,7 @@ class _RegisterState extends State<Register> {
                                   hintStyle: TextStyle(color: Colors.grey[400]),
                                   border: InputBorder.none,
                                   contentPadding: EdgeInsets.all(5.0),
-                                  label: Text("Email Address"),
+                                  label: const Text("Email Address"),
                                 ),
                               ),
                             ),
@@ -176,6 +182,8 @@ class _RegisterState extends State<Register> {
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return "Password Field Is Required";
+                                  } else if (value.length < 8) {
+                                    return "Password Should Be of Minimum 8 Characters";
                                   }
                                 },
                                 onSaved: (value) {
@@ -231,6 +239,7 @@ class _RegisterState extends State<Register> {
                           RegisterUser(
                             email: _emailcontroller.text,
                             password: _passwordcontroller.text,
+                            username: _usernamecontroller.text,
                           );
                         },
                         child: const Center(
@@ -265,38 +274,152 @@ class _RegisterState extends State<Register> {
         ));
   }
 
-  void RegisterUser({required email, required password}) async {
+  void RegisterUser(
+      {required email, required password, required username}) async {
+    final registerService = RegisterService();
     if (_key.currentState!.validate()) {
-      await _auth
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((value) => {
-                showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) => const Center(
-                    child: CircularProgressIndicator(),
-                  ),
+      // print(responseBody);
+      await registerService.RegisterApi({
+        "username": username,
+        "email": email,
+        "password1": password,
+        "password2": password
+      }).then((value) async {
+        if (value.username != null &&
+            value.password != null &&
+            value.email != null) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                title: const Text(
+                  'Registration Error',
+                  textAlign: TextAlign.center,
                 ),
-                postDetailsToFiresbase(),
-              })
-          .catchError(
-              (onError) => {Fluttertoast.showToast(msg: "User not register")});
+                content: Text(
+                  '${value.username}\n${value.email}\n${value.password}',
+                  textAlign: TextAlign.center,
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('OK'),
+                  ),
+                ]),
+          );
+        } else if (value.username != null && value.email != null) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                title: const Text(
+                  'Registration Error',
+                  textAlign: TextAlign.center,
+                ),
+                content: Text(
+                  '${value.username}\n${value.email}',
+                  textAlign: TextAlign.center,
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('OK'),
+                  ),
+                ]),
+          );
+        } else if (value.username != null) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                title: const Text(
+                  'Registration Error',
+                  textAlign: TextAlign.center,
+                ),
+                content: Text(
+                  '${value.username}',
+                  textAlign: TextAlign.center,
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('OK'),
+                  ),
+                ]),
+          );
+        } else if (value.email != null) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                title: const Text(
+                  'Registration Error',
+                  textAlign: TextAlign.center,
+                ),
+                content: Text(
+                  '${value.email}',
+                  textAlign: TextAlign.center,
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('OK'),
+                  ),
+                ]),
+          );
+        } else if (value.password != null) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                title: const Text(
+                  'Registration Error',
+                  textAlign: TextAlign.center,
+                ),
+                content: Text(
+                  '${value.password}',
+                  textAlign: TextAlign.center,
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('OK'),
+                  ),
+                ]),
+          );
+        } else {
+          // print(value.token);
+          Fluttertoast.showToast(
+              msg: "Register Successful! Please Confirm Your Email");
+          APICacheDBModel userDetail =
+              APICacheDBModel(key: "username", syncData: username);
+          await APICacheManager().addCacheData(userDetail);
+          Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => MainPage()));
+        }
+      });
     }
   }
-
-  postDetailsToFiresbase() async {
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    User? user = _auth.currentUser;
-    UserModel userModel = UserModel();
-    userModel.uid = user!.uid;
-    userModel.Email = _emailcontroller.text;
-    userModel.Username = _usernamecontroller.text;
-    await firebaseFirestore
-        .collection("users")
-        .doc(user.uid)
-        .set(userModel.toMap());
-    Fluttertoast.showToast(msg: "User Register Successfully");
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => VerifyEmail()));
-  }
 }
+
+//   postDetailsToFiresbase() async {
+//     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+//     User? user = _auth.currentUser;
+//     UserModel userModel = UserModel();
+//     userModel.uid = user!.uid;
+//     userModel.Email = _emailcontroller.text;
+//     userModel.Username = _usernamecontroller.text;
+//     await firebaseFirestore
+//         .collection("users")
+//         .doc(user.uid)
+//         .set(userModel.toMap());
+//     Fluttertoast.showToast(msg: "User Register Successfully");
+//     Navigator.of(context)
+//         .push(MaterialPageRoute(builder: (context) => VerifyEmail()));
+//   }
+// }
