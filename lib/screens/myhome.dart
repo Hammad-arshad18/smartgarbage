@@ -8,6 +8,7 @@ import 'package:flutter/rendering.dart';
 import 'package:smartgarbage/screens/about.dart';
 import 'package:smartgarbage/screens/blog.dart';
 import 'package:smartgarbage/screens/camera.dart';
+import 'package:smartgarbage/screens/changePassword.dart';
 import 'package:smartgarbage/screens/contact.dart';
 import 'package:smartgarbage/screens/employee_month.dart';
 import 'package:smartgarbage/screens/employee_year.dart';
@@ -294,7 +295,7 @@ class _MyHomeState extends State<MyHome> {
                     s_text: "Change Password",
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const AboutUs()));
+                          builder: (context) => ChangePassword()));
                     }),
               ],
             ),

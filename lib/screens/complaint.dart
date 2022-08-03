@@ -42,6 +42,10 @@ class _ComlaintState extends State<Comlaint> {
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: <
                     Widget>[
+              const Image(
+                image: AssetImage('assets/images/Logo.png'),
+                height: 170,
+              ),
               const Text(
                 "Your Complain",
                 style: TextStyle(
